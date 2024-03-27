@@ -238,7 +238,7 @@ def generate_html():
             document.getElementById('loading').style.display = 'block';
 
             // Fetch API to send the data to the Flask app
-            fetch('https://0.0.0.0:10000/fetch_data', { // Using a relative URL
+            fetch('https://35.160.120.126:8080/fetch_data', { // Using a relative URL
                 method: 'POST',
                 body: formData,
             })
@@ -316,4 +316,4 @@ def generate_html():
 
 if __name__ == '__main__':
     html_content = generate_html()  # Call generate_html() here before running the app
-    app.run(host="0.0.0.0", port=1000, debug=True)
+    app.run(host="35.160.120.126", port=8080, debug=True)
