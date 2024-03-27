@@ -8,5 +8,5 @@ handlers:
   script: auto
 
 env_variables:
-  FLASK_ENV: dataScraper
+  FLASK_ENV: venv
   FLASK_APP: app.py
