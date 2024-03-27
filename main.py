@@ -16,7 +16,7 @@ def index():
     html_content = generate_html()  # Call generate_html() here
     return html_content
 
-@app.route('/download_file/<path:filename>', methods=['GET'])
+@app.route('/output/<path:filename>', methods=['GET'])
 def download_file(filename):
     directory = 'output'
     return send_from_directory(directory, filename, as_attachment=True)
@@ -81,7 +81,7 @@ def generate_html():
 
         .container {
             border: 2px solid;
-            height: 1220px;
+            height: 650px;
             background-color: rgba(241, 241, 241, 0.7); 
             text-align: center;
             margin: 20px;
@@ -238,7 +238,7 @@ def generate_html():
             document.getElementById('loading').style.display = 'block';
 
             // Fetch API to send the data to the Flask app
-            fetch('http://127.0.0.1:5000/fetch_data', { // Using a relative URL
+            fetch('http://127.0.0.1:8080/fetch_data', { // Using a relative URL
                 method: 'POST',
                 body: formData,
             })
@@ -285,7 +285,7 @@ def generate_html():
             var today = new Date().toISOString().slice(0,10); // Get today's date in format "YYYY-MM-DD"
 
             // Construct the URL for the file download
-            var downloadUrl = `/download_file/${dataType}/${dataType}_${country}_${today}.pdf`;
+            var downloadUrl = `/output/${dataType}/${dataType}_${country}_${today}.pdf`;
 
             // Create a temporary anchor element
             var downloadLink = document.createElement("a");

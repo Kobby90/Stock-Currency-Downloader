@@ -9,4 +9,4 @@ handlers:
 
 env_variables:
   FLASK_ENV: venv
-  FLASK_APP: app.py
+  FLASK_APP: main.py
