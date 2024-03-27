@@ -90,7 +90,7 @@ def generate_html():
         .container img {
             overflow-clip-margin: content-box;
             height: auto;
-            max-width: 20%;
+            max-width: 10%;
             border: 0;
             position: absolute;
             top: 40px; 
@@ -98,6 +98,7 @@ def generate_html():
         }
 
         h1 {
+            margin-top: 20px;
             font-size: 40px;
             margin: 100px 0 50px;
         }
