@@ -2,11 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 import subprocess
-import tempfile
 from datetime import date
-import io
-import matplotlib.pyplot as plt
-import matplotlib.backends.backend_pdf as pdf_backend
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for simplicity

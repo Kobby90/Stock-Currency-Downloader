@@ -11,7 +11,7 @@ import os
 CountryName= "mauritius"
 current_Date = datetime.now().strftime("%Y-%m-%d")
 
-def scrape_specific_table(url, table_class):
+def fetch_exchange_rates(url, table_class):
     # Send a GET request to the website
     response = requests.get(url)
 
@@ -77,7 +77,7 @@ website_url = "https://www.bom.mu/"
 specific_table_class = "views-table cols-3 table table-hover table-striped"
 
 # Call the function to scrape and create a DataFrame from the specific table
-result_df, table_title = scrape_specific_table(website_url, specific_table_class)
+result_df, table_title = fetch_exchange_rates(website_url, specific_table_class)
 
 # Save the DataFrame as a PDF with the fixed title and without the index
 save_dataframe_to_pdf(result_df, "Exchange_Rates", table_title)

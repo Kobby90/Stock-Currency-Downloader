@@ -97,6 +97,6 @@ def fetch_exchange_rates():
     else:
         return "Error accessing the website. Please try again later."
 
-# Example usage
-if __name__ == "__main__":
-    print(fetch_exchange_rates())
+# Call the function
+result = fetch_exchange_rates()
+print(result)
