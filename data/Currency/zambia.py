@@ -1,20 +1,44 @@
+import os
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.edge.options import Options as EdgeOptions
 from bs4 import BeautifulSoup
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import date
-import os
 import time
 
-def fetch_exchange_rates():
-    # Configure Chrome options for headless mode
-    options = Options()
-    options.headless = True
-    
-    # Launch Chrome browser with headless mode
-    driver = webdriver.Chrome(options=options)
+def detect_browser():
+    if os.getenv('CHROME_DRIVER') == 'True':
+        return 'chrome'
+    elif os.getenv('FIREFOX_DRIVER') == 'True':
+        return 'firefox'
+    elif os.getenv('EDGE_DRIVER') == 'True':
+        return 'edge'
+    else:
+        raise ValueError("No supported browser found.")
+
+def fetch_exchange_rates(browser=None):
+    if not browser:
+        browser = detect_browser()
+
+    if browser.lower() == 'chrome':
+        options = ChromeOptions()
+        options.headless = True  # Set to True for headless mode
+        driver = webdriver.Chrome(options=options)
+    elif browser.lower() == 'firefox':
+        options = FirefoxOptions()
+        options.headless = True  # Set to True for headless mode
+        driver = webdriver.Firefox(options=options)
+    elif browser.lower() == 'edge':
+        options = EdgeOptions()
+        options.use_chromium = True  # Set to True for Edge Chromium
+        options.headless = True  # Set to True for headless mode
+        driver = webdriver.Edge(options=options)
+    else:
+        raise ValueError("Invalid browser type. Please specify 'chrome', 'firefox', or 'edge'.")
 
     # Open the webpage
     url = "https://www.boz.zm/"
@@ -33,7 +57,7 @@ def fetch_exchange_rates():
     soup = BeautifulSoup(html_content, "html.parser")
 
     # Find the table element
-    table = soup.find("table",class_="table table-striped", id="hp_key")
+    table = soup.find("table", class_="table table-striped", id="hp_key")
 
     if table:
         # Initialize lists to store table data
@@ -53,10 +77,10 @@ def fetch_exchange_rates():
             data.append(row_data)
 
         # Convert the data to a DataFrame
-        df = pd.DataFrame(data, columns=["Currency","Buying","Selling"])
+        df = pd.DataFrame(data, columns=["Currency", "Buying", "Selling"])
 
         print(df)
-        
+
         # Define the path for saving the PDF file
         output_folder = "output/Currency"
         pdf_path = f"{output_folder}/Currency_zambia_{date.today()}.pdf"
@@ -73,18 +97,18 @@ def fetch_exchange_rates():
 
         # Save the DataFrame as a PDF file
         with PdfPages(pdf_path) as pdf:
-            fig, ax = plt.subplots(figsize=(16, 12)) # Increase figure size
+            fig, ax = plt.subplots(figsize=(16, 12))  # Increase figure size
             ax.axis('tight')
             ax.axis('off')
-            ax.set_title('Average Exchange rates in Zambia', fontweight="bold") # Adjust title padding
+            ax.set_title('Average Exchange rates in Zambia', fontweight="bold")  # Adjust title padding
             # Calculate column widths based on content
             col_widths = [max(df[col].apply(lambda x: len(str(x))).max(), len(col)) for col in df.columns]
 
             table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
             table.auto_set_font_size(False)
-            table.set_fontsize(12) # Adjust font size of column headers
-            table.scale(1.2, 1.2) # Increase cell size
-    
+            table.set_fontsize(12)  # Adjust font size of column headers
+            table.scale(1.2, 1.2)  # Increase cell size
+
             # Adjust column widths
             for i, width in enumerate(col_widths):
                 table.auto_set_column_width(col=i)
@@ -96,4 +120,6 @@ def fetch_exchange_rates():
     else:
         print("Table not found on the webpage.")
 
-fetch_exchange_rates()
+# Automatically detect the browser and call fetch_exchange_rates
+browser_type = detect_browser()
+fetch_exchange_rates(browser=browser_type)
