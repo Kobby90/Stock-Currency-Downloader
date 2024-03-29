@@ -91,5 +91,4 @@ def fetch_exchange_rates():
         print(f"DataFrame saved as PDF: {pdf_path}")
     else:
         print("Table not found on the webpage.")
-result=fetch_exchange_rates()
-print(result)
+fetch_exchange_rates()

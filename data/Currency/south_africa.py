@@ -90,5 +90,5 @@ def fetch_exchange_rates():
         print("Table not found on the webpage.")
 
 # Call the function
-result = fetch_exchange_rates()
-print(result)
+fetch_exchange_rates()
+
