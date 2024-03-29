@@ -1,60 +1,35 @@
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.edge.options import Options as EdgeOptions
 from bs4 import BeautifulSoup
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import date
 import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
-def detect_browser():
-    if os.getenv('CHROME_DRIVER') == 'True':
-        return 'chrome'
-    elif os.getenv('FIREFOX_DRIVER') == 'True':
-        return 'firefox'
-    elif os.getenv('EDGE_DRIVER') == 'True':
-        return 'edge'
-    else:
-        raise ValueError("No supported browser found.")
-
-def fetch_exchange_rates(browser=None):
-    if not browser:
-        browser = detect_browser()
-
-    if browser.lower() == 'chrome':
-        options = ChromeOptions()
-        options.headless = True  # Set to True for headless mode
-        driver = webdriver.Chrome(options=options)
-    elif browser.lower() == 'firefox':
-        options = FirefoxOptions()
-        options.headless = True  # Set to True for headless mode
-        driver = webdriver.Firefox(options=options)
-    elif browser.lower() == 'edge':
-        options = EdgeOptions()
-        options.use_chromium = True  # Set to True for Edge Chromium
-        options.headless = True  # Set to True for headless mode
-        driver = webdriver.Edge(options=options)
-    else:
-        raise ValueError("Invalid browser type. Please specify 'chrome', 'firefox', or 'edge'.")
-
+def fetch_exchange_rates():
+    # Selenium configuration
+    options = Options()
+    options.add_argument('--headless')  # Run Chrome in headless mode
+    options.add_argument('--disable-gpu')  # Disable GPU acceleration
+    driver = webdriver.Chrome(options=options)
+    
     # Open the webpage
     url = "https://www.boz.zm/"
     driver.get(url)
-
-    # Wait for the JavaScript to load the data (you might need to adjust the wait time)
-    time.sleep(5)
-
-    # Extract the HTML content after JavaScript execution
-    html_content = driver.page_source
-
-    # Close the browser
+    
+    # Wait for the page to fully load (adjust wait time as needed)
+    time.sleep(5)  # You may need to adjust this wait time
+    
+    # Get the page source after JavaScript execution
+    page_source = driver.page_source
+    
+    # Close the Selenium WebDriver
     driver.quit()
 
     # Parse the HTML content
-    soup = BeautifulSoup(html_content, "html.parser")
+    soup = BeautifulSoup(page_source, "html.parser")
 
     # Find the table element
     table = soup.find("table", class_="table table-striped", id="hp_key")
@@ -106,7 +81,7 @@ def fetch_exchange_rates(browser=None):
 
             table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
             table.auto_set_font_size(False)
-            table.set_fontsize(12)  # Adjust font size of column headers
+            table.set_fontsize(10)  # Adjust font size of column headers
             table.scale(1.2, 1.2)  # Increase cell size
 
             # Adjust column widths
@@ -120,6 +95,4 @@ def fetch_exchange_rates(browser=None):
     else:
         print("Table not found on the webpage.")
 
-# Automatically detect the browser and call fetch_exchange_rates
-browser_type = detect_browser()
-fetch_exchange_rates(browser=browser_type)
+fetch_exchange_rates()

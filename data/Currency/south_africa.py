@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,8 +9,11 @@ import os
 import time
 
 def fetch_exchange_rates():
-    # Launch Chrome browser
-    driver = webdriver.Chrome()
+    # Selenium configuration
+    options = Options()
+    options.add_argument('--headless')  # Run Chrome in headless mode
+    options.add_argument('--disable-gpu')  # Disable GPU acceleration
+    driver = webdriver.Chrome(options=options)
 
     # Open the webpage
     url = "https://www.resbank.co.za/en/home"
@@ -75,7 +79,7 @@ def fetch_exchange_rates():
 
             table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
             table.auto_set_font_size(False)
-            table.set_fontsize(12) # Adjust font size of column headers
+            table.set_fontsize(10) # Adjust font size of column headers
             table.scale(1.2, 1.2) # Increase cell size
     
             # Adjust column widths
