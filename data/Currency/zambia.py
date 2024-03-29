@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,8 +9,12 @@ import os
 import time
 
 def fetch_exchange_rates():
-    # Launch Chrome browser
-    driver = webdriver.Chrome()
+    # Configure Chrome options for headless mode
+    options = Options()
+    options.headless = True
+    
+    # Launch Chrome browser with headless mode
+    driver = webdriver.Chrome(options=options)
 
     # Open the webpage
     url = "https://www.boz.zm/"
@@ -67,7 +72,6 @@ def fetch_exchange_rates():
                 break  # Assuming only one file needs to be overwritten
 
         # Save the DataFrame as a PDF file
-        # Save the DataFrame as a PDF file
         with PdfPages(pdf_path) as pdf:
             fig, ax = plt.subplots(figsize=(16, 12)) # Increase figure size
             ax.axis('tight')
@@ -91,4 +95,5 @@ def fetch_exchange_rates():
         print(f"DataFrame saved as PDF: {pdf_path}")
     else:
         print("Table not found on the webpage.")
+
 fetch_exchange_rates()
