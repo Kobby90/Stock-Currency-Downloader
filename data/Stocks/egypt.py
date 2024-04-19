@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -14,8 +15,12 @@ def fetch_stock_data():
     driver.get(url)
 
     # Wait for the JavaScript to load the data
-    wait = WebDriverWait(driver, 30)
-    wait.until(EC.presence_of_element_located((By.ID, "ctl00_C_S_RadGrid2_ctl00")))
+    wait = WebDriverWait(driver, 60)
+    try:
+        # Wait for the element to be visible
+        wait.until(EC.visibility_of_element_located((By.ID, "ctl00_C_S_RadGrid2_ctl00")))
+    except TimeoutException:
+        print("Timed out waiting for element to be visible")
 
     # Extract the HTML content after JavaScript execution
     html_content = driver.page_source
@@ -50,5 +55,5 @@ def fetch_stock_data():
         print(df)
     else:
         print("Table not found on the webpage.")
-result=fetch_stock_data()
-print(result)
+
+fetch_stock_data()

@@ -7,6 +7,10 @@ from datetime import date
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for simplicity
 
+@app.route("/meta.json")
+def serve_meta():
+    return app.send_static_file("meta.json")
+
 @app.route('/')
 def index():
     html_content = generate_html()  # Call generate_html() here
